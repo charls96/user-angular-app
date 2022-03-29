@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { User } from 'src/app/interfaces/user';
+import { UserService } from 'src/app/services/user.service';
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -18,27 +20,23 @@ export interface PeriodicElement {
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
-
-  listUsers: User[] = [
-    {user: 'carlos', name: 'Carlos', surname: 'Daniel', gender: 'male'},
-    {user: 'juanB', name: 'Juan', surname: 'malo', gender: 'male'},
-    {user: 'vaness', name: 'Vanesa', surname: 'Villa', gender: 'female'},
-    {user: 'geo', name: 'Geovanny', surname: 'Podesta', gender: 'male'},
-    {user: 'almu', name: 'almudena', surname: 'Vivancos', gender: 'female'},
-    {user: 'fede', name: 'Federico', surname: 'Pastor', gender: 'male'},
-    {user: 'serito', name: 'Sergio', surname: 'Buendia', gender: 'male'},
-  ];
+  listUsers: User[] = [];
 
   displayedColumns: string[] = ['user', 'name', 'surname', 'gender', 'actions'];
-  dataSource = new MatTableDataSource(this.listUsers);
+  dataSource!: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor() { }
+  constructor(private _userService: UserService, private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    this.loadUsers();
+  }
 
+  loadUsers(){
+    this.listUsers = this._userService.getUsers();
+    this.dataSource = new MatTableDataSource(this.listUsers);
   }
 
   ngAfterViewInit() {
@@ -49,6 +47,17 @@ export class UsersComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  deleteUser(index: number){
+    this._userService.deleteUser(index);
+    this.loadUsers();
+
+    this._snackBar.open('User deleted', '', {
+      duration: 1500,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom'
+    })
   }
 
 }
