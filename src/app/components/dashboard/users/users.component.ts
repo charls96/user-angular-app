@@ -57,7 +57,7 @@ export class UsersComponent implements OnInit {
       duration: 1500,
       horizontalPosition: 'center',
       verticalPosition: 'bottom'
-    })
+    });
   }
 
 }

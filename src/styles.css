@@ -7,3 +7,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin: 0 100px;
   margin-top: 10px;
 }
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.width{
+  width: 80%;
+}
